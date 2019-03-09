@@ -52,8 +52,8 @@ body {
 }
 
 .graph {
-    width: 60vmin;
-    height: 60vmin;
+    width: 45vmin;
+    height: 45vmin;
     border-radius: 50%;
 
     border: 12px solid rgba(173, 243, 255, 0.8);
@@ -75,10 +75,10 @@ body {
 }
 
 .graph-inner > .graph-dot {
-    height: 12%;
-    width: 12%;
-    background-color: rgb(255, 200, 98);
-    border: 8px solid rgb(137, 214, 228);
+    height: 9%;
+    width: 9%;
+    background-color: rgb(255, 70, 70);
+    border: 7px solid rgb(137, 214, 228);
     border-radius: 50%;
     z-index: 2;
 }
@@ -104,39 +104,53 @@ body {
 }
 
 .scoreContainer {
-    height: 60vmin;
-    width: 5vmin;
+    height: 70vmin;
+    width: 20vmin;
     box-sizing: border-box;
-    border-radius: 2%;
     background-color: rgb(31, 31, 31);
-    margin-left: 15vmin;
+    margin-left: 30vmin;
 
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+    
+    vertical-align: bottom;
 }
 
 .scoreProgress {
     background-color: rgba(173, 243, 255, 0.8);
-    width: 100%;
+    width: 20%;
+    border-radius: 0.2em;
 }
 
 .scoreTextContainer {
-    font-family: "Helvetica", "Lucida Console", "sans serif";
+    font-family: "Lucida Console", "Helvetica", "sans serif";
+    //vertical-align: bottom;
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
     color: rgba(173, 243, 255, 0.8);
-    position: absolute;
-    top: 5%;
-    left: 5%;
-    vertical-align: center;
-    text-align: center
+
+    position: relative;
+    bottom: 0;
+    left: 1vmin;
 }
 
 .scoreLabel {
-    font-size: 1em;
+    
+    color: rgba(173, 243, 255, 0.5);
+    font-size: 1.2em;
+    display: flex !important;
+    //vertical-align: bottom;
 }
 
 .scoreValue {
-    font-size: 5em;
+    
+    color: rgb(173, 243, 255);
+    font-size: 2.8em;
+    margin-bottom: 0em;
+    display: flex !important;
+    //vertical-align: bottom;
 }
 
 

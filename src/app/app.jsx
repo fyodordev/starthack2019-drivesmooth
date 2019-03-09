@@ -106,6 +106,9 @@ class Main extends React.Component {
     }
 
     this.jerkInterval = setInterval(() => {
+      this.setState({
+        accel: [this.props.data[0], this.props.data[1]]
+      });
       const lmp = this.lastAccel || [0, 0];
       const cmp = this.state.accel || [0, 0];
       const njerk = [cmp[0] - lmp[0], cmp[1] - lmp[1]];
@@ -178,15 +181,13 @@ class Main extends React.Component {
             <div className="graph-circle"></div>
           </div>
         </div>
-        <div className='bothContainer'>
-          <div className='scoreTextContainer'>
-            <div className='scoreLabel'>Driving smoothness</div>
-            <div className='scoreValue'>{Math.round(this.state.score)}</div>
-          </div>
           <div className='scoreContainer'>
             <div className='scoreProgress' style={{height: `${this.state.score}%`}}></div>
+            <div className='scoreTextContainer'>
+              <div className='scoreValue'>{Math.round(this.state.score)}</div>
+              <div className='scoreLabel'>Driving <br />smoothness</div>
+            </div>
           </div>
-        </div>
       </div>
     )
   }
@@ -194,10 +195,13 @@ class Main extends React.Component {
 
 const backendSocket = io();
 
-backendSocket.on('drive data', (msg) => {
-  console.log(msg);
+backendSocket.on('data', (msg) => {
+  const parsed = JSON.parse(msg);
+  const t = parsed["samples"]["ESP_Querbeschleunigung"]["utc"];
+  const x = parsed["samples"]["ESP_Querbeschleunigung"]["value"];
+  const y = parsed["samples"]["ESP_Laengsbeschl"]["value"];
   setTimeout(() => {
-    ReactDOM.render(<Main data={msg}/>, document.getElementById('app'));
+    ReactDOM.render(<Main data={[t, x, y]}/>, document.getElementById('app'));
   }, 50);
 });
 
