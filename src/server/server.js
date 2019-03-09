@@ -8,9 +8,12 @@ import views from 'koa-views';
 import http from 'http';
 import socket from 'socket.io';
 import fs from 'fs';
+import crypto from 'crypto';
 
 const app = new Koa();
 const router = new Router();
+
+const veryReliableUserDatabase = {};
 
 
 app.use(views(path.join(__dirname, '../public')));
@@ -23,6 +26,12 @@ router.get('/', async (ctx, next) => {
 app.use(serve(path.join(__dirname, '../public')));
 
 app.use(router.routes());
+
+router.get('/users', async (ctx, next) => {
+  const userid = ctx.request.body;
+  await ctx.render(JSON.stringify(veryReliableUserDatabase[userid]));
+  next();
+});
 
 async function readFile(filename) {
   return await new Promise((accept) => {
@@ -63,10 +72,21 @@ const server = http.createServer(app.callback());
 const io = new socket(server);
 
 io.on('connection', async function(socket) {
-    socket.on('raw data', function(msg) {
+    // "fuck uf kryptographie" - fyodor 2k19
+    const b64uid = Math.random();
+    veryReliableUserDatabase[b64uid] = {
+      scores: [],
+    };
+
+    socket.on('raw data', (msg) => {
       console.log(`${Date.now()}: ${msg}`);
     });
+    socket.on('score', (msg) => {
+      veryReliableUserDatabase[b64uid].scores.push([new Date().toISOString(), msg]);
+    });
+
     socket.emit('drive data', await loadData());
+    socket.emit('user id', b64uid);
 })
 
 
