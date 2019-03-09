@@ -106,7 +106,7 @@ sensorSocket.onopen = function() {
         Name: "ESP_Querbeschleunigung",
       },
     ],
-    samplerate: 250,
+    samplerate: 100,
     withtimestamp: true
   }));
 };

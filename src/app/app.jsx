@@ -143,7 +143,7 @@ class Main extends React.Component {
       }
     });
 
-    this.update_scores_array([now, Math.sqrt(pos[0]**2 + position[1]**2)]);
+    this.update_scores_array([now, Math.sqrt(pos[0]**2 + pos[1]**2)]);
   }
   
   render() {
@@ -153,7 +153,7 @@ class Main extends React.Component {
     const dampedaccel = this.state.dampedaccel;
     const pos = this.state.pos;
     const smoothpos = this.state.smoothpos;
-    const isDangerous = smoothpos.map(a => a**2).reduce((a, b) => a+b) >= (accelLimit)**2;
+    const isDangerous = smoothpos.map(a => a**2).reduce((a, b) => a+b) >= (50)**2;
     return (
       <div className={'displaycontainer' + (isDangerous ? ' dangerous' : '')}>
         <div className='graph'>
@@ -192,21 +192,34 @@ let lastAccel = [0, 0];
 
 const backendSocket = io();
 
+let ct = -1;
+let cx = 0;
+let cy = 0;
+
 backendSocket.on('data', (msg) => {
   const parsed = JSON.parse(msg);
   const t = parsed["samples"]["ESP_Querbeschleunigung"]["utc"];
   const x = parsed["samples"]["ESP_Querbeschleunigung"]["value"];
   const y = parsed["samples"]["ESP_Laengsbeschl"]["value"];
-  mainRef.current.updateState([x, y], [x - lastAccel[0], y - lastAccel[1]], t);
-  lastAccel = [x, y];
+  if (t >= ct) {
+    ct = t;
+    cx = x;
+    cy = y;
+  }
 });
+
+setInterval(() => {
+  console.log(ct, cx, cy);
+  mainRef.current.updateState([cx, cy], [cx - lastAccel[0], cy - lastAccel[1]], ct);
+  lastAccel = [cx, cy];
+}, 50);
 
 backendSocket.on('user id', (msg) => {
   console.log(`your user id: ${msg}`);
 });
 
 
-const sensorSocket = new WebSocket('ws://130.82.239.210/ws');
+/*const sensorSocket = new WebSocket('ws://130.82.239.210/ws');
 
 sensorSocket.onopen = function() {
   console.log("sensor socket was opened");
@@ -238,7 +251,7 @@ sensorSocket.onerror = (e) => {
 
 sensorSocket.onclose = (e) => {
   console.log("Socket close: ", e);
-}
+}*/
 
 
 new Chart(document.getElementById("score-chart"), {
