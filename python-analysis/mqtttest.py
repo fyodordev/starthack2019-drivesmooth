@@ -22,7 +22,7 @@ def on_connect(client, userdata, flags, rc):
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
     client.subscribe("/signal/ESP_Laengsbeschl")
-    client.subscribe("/signal/ESP_Querbeschleinigung")
+    client.subscribe("/signal/ESP_Querbeschleunigung")
     client.subscribe("/signal/ESP_VL_Radgeschw_02")
     client.subscribe("/signal/ESP_VR_Radgeschw_02")
     client.subscribe("/signal/ESP_HL_Radgeschw_02")
