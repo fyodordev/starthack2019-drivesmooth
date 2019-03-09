@@ -1,7 +1,6 @@
-import os
-import matplotlib.pyplot as plt
-import numpy as np
 import sys
+import os
+import numpy as np
 
 rootfolder = sys.argv[1]
 for rootdir, dirs, filenames in os.walk(rootfolder):
@@ -15,16 +14,6 @@ for rootdir, dirs, filenames in os.walk(rootfolder):
     times, indices_hor, indices_ver = np.intersect1d(hortime, vertime, assume_unique=True, return_indices=True)
     horizontal = np.take(horizontal[1], indices_hor)
     vertical = np.take(vertical[1], indices_ver)
-    times = times[3079:]
     times = np.subtract(times, times[0])
     times = np.divide(times, 60*1e9)
-    times = np.extract(times < 60, times)
-    horizontal = horizontal[3079:len(times)]
-    vertical = vertical[3079:len(times)]
-
-    fig, ax = plt.subplots(figsize=(36, 36))
-    ax.plot(times, horizontal, label="Horizontal", color='y')
-    ax.plot(times, vertical, label="Vertical", color='b')
-    fig.legend()
-    fig.savefig(os.path.join(rootfolder, "acceleration.png"))
-
+    horizontal = np.multiply(horizontal, 7)
