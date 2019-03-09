@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import io from 'socket.io-client';
-
+import Chart from 'chart.js';
 
 
 // Set these "goal values" to reasonable defaults or compute dynamically.
@@ -239,3 +239,26 @@ sensorSocket.onerror = (e) => {
 sensorSocket.onclose = (e) => {
   console.log("Socket close: ", e);
 }
+
+
+new Chart(document.getElementById("score-chart"), {
+  type: 'line',
+  data: {
+    labels: ['', '', '', '', '', '', '', '', '', ''],
+    datasets: [
+      { 
+        data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        label: "yo",
+        borderColor: "red",
+        fill: false
+      },
+    ]
+  },
+  options: {
+    title: {
+      display: false,
+    }
+  }
+});
+
+
