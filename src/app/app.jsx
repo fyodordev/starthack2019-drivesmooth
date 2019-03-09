@@ -7,8 +7,6 @@ import Chart from 'chart.js';
 // Set these "goal values" to reasonable defaults or compute dynamically.
 const accelLimit = 2.75;
 const jerkLimit = 0.4;
-const allIntervalData = [];
-const saveInterval = 10; // In minutes
 
 const SCORE_THRESHOLD = 2;
 const SCORE_10_BENCHMARK = 1;
@@ -54,16 +52,16 @@ class Main extends React.Component {
       });
     }));*/
 
-    window.setTimestamp = (timestamp) => {
+    /*window.setTimestamp = (timestamp) => {
       this.timestamp = timestamp;
       this.dataIndex = 0;
     };
 
     window.setSpeed = (speed) => {
       this.speed = speed;
-    };
+    };*/
 
-    this.updateInterval = setInterval(() => {
+    /*this.updateInterval = setInterval(() => {
       const now = window.performance.now();
       this.timestamp += (now - this.lastTimeFetch) * this.speed;
       this.lastTimeFetch = now;
@@ -83,7 +81,7 @@ class Main extends React.Component {
           accel: accel,
         });
       }
-    }, 10);
+    }, 10);*/
 
     this.update_scores_array = (new_score) => {
       let acc = 0;
@@ -105,7 +103,7 @@ class Main extends React.Component {
       });
     }
 
-    this.jerkInterval = setInterval(() => {
+    /*this.jerkInterval = setInterval(() => {
       this.setState({
         accel: [this.props.data[0], this.props.data[1]]
       });
@@ -121,37 +119,31 @@ class Main extends React.Component {
         smoothpos: [this.state.smoothpos[0] * 0.8 + 0.2 * pos[0], this.state.smoothpos[1] * 0.8 + 0.2 * pos[1]],
       });
       this.lastAccel = cmp;
-    }, 100);
+    }, 100);*/
   }
 
   componentWillUnmount() {
     /*window.removeEventListener('mousemove', this.onMouseMove);*/
-    clearInterval(this.jerkInterval);
-    clearInterval(this.updateInterval);
+    //clearInterval(this.jerkInterval);
+    //clearInterval(this.updateInterval);
   }
 
   //How state should be updated.
   updateState(accel, jerk, now) {
-    while (now - allInterval[0].time > saveInterval * 60000) {
-      allIntervalData.shift();
-    }
-    allIntervalData.push({time: now, accel, jerk});
-
-    let position = datatoPos(accel, jerk);
+    let pos = dataToPos(accel, jerk);
 
     this.setState((prevState) => {
       return {
         accel: accel,
         jerk: jerk,
-        pos: position,
-        currentDangerVal: Math.min(Math.max(Math.sqrt((pos.map(a => a**2).reduce((a, b) => a+b)) - 50) / endDangerRangeRatio * 50, 1), 0),
-        previousDangerVal: prevState.currentDangerVal,
+        pos: pos,
+        smoothpos: [0.8 * prevState.smoothpos[0] + 0.2 * pos[0], 0.8 * prevState.smoothpos[1] + 0.2 * pos[1]],
         time: now,
         prevTime: prevState.time,
       }
     });
 
-    this.update_scores_array([now, Math.sqrt(position[0]*position[0] + position[1]*position[1])]);
+    this.update_scores_array([now, Math.sqrt(pos[0]**2 + position[1]**2)]);
   }
   
   render() {
@@ -162,10 +154,6 @@ class Main extends React.Component {
     const pos = this.state.pos;
     const smoothpos = this.state.smoothpos;
     const isDangerous = smoothpos.map(a => a**2).reduce((a, b) => a+b) >= (accelLimit)**2;
-    const isWarn = pos.map(a => a**2).reduce((a, b) => a+b) >= 45**2;
-    const endDangerRangeRatio = 0.5;
-    const decay = 0.5;
-    // const updateDangerVal = 
     return (
       <div className={'displaycontainer' + (isDangerous ? ' dangerous' : '')}>
         <div className='graph'>
@@ -193,6 +181,15 @@ class Main extends React.Component {
   }
 }
 
+
+let mainRef = React.createRef();
+
+ReactDOM.render(<Main ref={mainRef}/>, document.getElementById('app'));
+
+
+
+let lastAccel = [0, 0];
+
 const backendSocket = io();
 
 backendSocket.on('data', (msg) => {
@@ -200,9 +197,8 @@ backendSocket.on('data', (msg) => {
   const t = parsed["samples"]["ESP_Querbeschleunigung"]["utc"];
   const x = parsed["samples"]["ESP_Querbeschleunigung"]["value"];
   const y = parsed["samples"]["ESP_Laengsbeschl"]["value"];
-  setTimeout(() => {
-    ReactDOM.render(<Main data={[t, x, y]}/>, document.getElementById('app'));
-  }, 50);
+  mainRef.current.updateState([x, y], [x - lastAccel[0], y - lastAccel[1]], t);
+  lastAccel = [x, y];
 });
 
 backendSocket.on('user id', (msg) => {
