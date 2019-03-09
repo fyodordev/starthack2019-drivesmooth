@@ -16,13 +16,21 @@ const backendSocket = io();
 const sensorSocket = new WebSocket('ws://130.82.239.210');
 
 sensorSocket.onopen = function() {      
-  console.log("sensor socket was opened");
+    console.log("sensor socket was opened");
 };
 
-sensorSocket.onmessage = function(evt) { 
-  var received_msg = evt.data;
-  console.log(`received message: ${received_msg}`);
-  backendSocket.emit('raw data', received_msg);
+sensorSocket.onmessage = (e) => { 
+    var received_msg = e.data;
+    console.log(`received message: ${received_msg}`);
+    backendSocket.emit('raw data', received_msg);
 };
+
+sensorSocket.onerror = (e) => {
+    console.log("Socket error: " + e.data);
+};
+
+sensorSocket.onclose = (e) => {
+    console.log("Socket close: ", e);
+}
 
 ReactDOM.render(<HelloWorld />, document.getElementById('app'));
