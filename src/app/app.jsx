@@ -178,15 +178,13 @@ class Main extends React.Component {
             <div className="graph-circle"></div>
           </div>
         </div>
-        <div className='bothContainer'>
-          <div className='scoreTextContainer'>
-            <div className='scoreLabel'>Driving smoothness</div>
-            <div className='scoreValue'>{Math.round(this.state.score)}</div>
-          </div>
           <div className='scoreContainer'>
             <div className='scoreProgress' style={{height: `${this.state.score}%`}}></div>
+            <div className='scoreTextContainer'>
+              <div className='scoreValue'>{Math.round(this.state.score)}</div>
+              <div className='scoreLabel'>Driving <br />smoothness</div>
+            </div>
           </div>
-        </div>
       </div>
     )
   }
