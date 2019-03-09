@@ -7,7 +7,7 @@ SIMULATION_IP = "82.165.25.152"
 SIMULATION_PORT = 1884
 CAR_IP = "82.165.25.152"
 CAR_PORT = 1883
-ON_SIMULATION = False
+ON_SIMULATION = True
 
 
 starttime = datetime.datetime.now()
