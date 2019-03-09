@@ -65,6 +65,7 @@ body {
     height: 100%;
     top: 50%;
     left: 50%;
+    transform-origin: 0.5 0.5;
 }
 
 .graph-inner > * {
@@ -82,6 +83,7 @@ body {
 }
 .graph-inner > .graph-dot.black { background-color: black; }
 .graph-inner > .graph-dot.red { background-color: red; }
+.graph-inner > .graph-dot.pink { background-color: pink; }
 .graph-inner > .graph-dot.blue { background-color: blue; }
 .graph-inner > .graph-dot.green { background-color: green; }
 .graph-inner > .graph-dot.yellow { background-color: yellow; }
