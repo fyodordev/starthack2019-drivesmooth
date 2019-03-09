@@ -106,6 +106,9 @@ class Main extends React.Component {
     }
 
     this.jerkInterval = setInterval(() => {
+      this.setState({
+        accel: [this.props.data[0], this.props.data[1]]
+      });
       const lmp = this.lastAccel || [0, 0];
       const cmp = this.state.accel || [0, 0];
       const njerk = [cmp[0] - lmp[0], cmp[1] - lmp[1]];
