@@ -56,7 +56,7 @@ body {
     height: 60vmin;
     border-radius: 50%;
 
-    border: 10px solid rgba(147, 239, 255, 0.8);
+    border: 12px solid rgba(173, 243, 255, 0.8);
 }
 
 .graph-inner {
@@ -75,15 +75,16 @@ body {
 }
 
 .graph-inner > .graph-dot {
-    height: 10%;
-    width: 10%;
-    background-color: white;
+    height: 12%;
+    width: 12%;
+    background-color: rgb(255, 200, 98);
+    border: 8px solid rgb(137, 214, 228);
     border-radius: 50%;
     z-index: 2;
 }
 .graph-inner > .graph-dot.black { background-color: black; }
 .graph-inner > .graph-dot.red { background-color: red; }
-.graph-inner > .graph-dot.orange { background-color: rgb(255, 171, 44); }
+//.graph-inner > .graph-dot.orange {}
 .graph-inner > .graph-dot.pink { background-color: pink; }
 .graph-inner > .graph-dot.blue { background-color: blue; }
 .graph-inner > .graph-dot.green { background-color: green; }
@@ -92,9 +93,10 @@ body {
 
 
 .graph-inner > .graph-line {
-    background-color: rgba(147, 239, 255, 0.8);
-    height: 100%;
-    width: 3px;
+    // background-color: rgba(147, 239, 255, 0.8);
+    border: 2px dashed rgba(173, 243, 255, 0.2);
+    height: 98%;
+    width: 0px;
 }
 
 .graph-inner > .graph-line.horizontal {
@@ -103,12 +105,11 @@ body {
 
 .scoreContainer {
     height: 60vmin;
-    width: 15vmin;
+    width: 5vmin;
     box-sizing: border-box;
     border-radius: 2%;
     background-color: rgb(31, 31, 31);
-    border: 10px solid rgba(147, 239, 255, 0.8);
-    margin-left: 30vmin;
+    margin-left: 15vmin;
 
     display: flex;
     flex-direction: row;
@@ -116,25 +117,26 @@ body {
 }
 
 .scoreProgress {
-    background-color: rgb(255, 171, 44);
+    background-color: rgba(173, 243, 255, 0.8);
     width: 100%;
 }
 
 .scoreTextContainer {
     font-family: "Helvetica", "Lucida Console", "sans serif";
-    color: rgba(147, 239, 255, 0.8);
+    color: rgba(173, 243, 255, 0.8);
     position: absolute;
-    top: 20px;
-    left: 20px;
+    top: 5%;
+    left: 5%;
+    vertical-align: center;
+    text-align: center
 }
 
 .scoreLabel {
-    font-size: 0.8em;
-    vertical-align: center;
+    font-size: 1em;
 }
 
 .scoreValue {
-    font-size: 1.5em;
+    font-size: 5em;
 }
 
 

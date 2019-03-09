@@ -179,7 +179,7 @@ class Main extends React.Component {
         </div>
         <div className='bothContainer'>
           <div className='scoreTextContainer'>
-            <div className='scoreLabel'>Score</div>
+            <div className='scoreLabel'>Driving smoothness</div>
             <div className='scoreValue'>{Math.round(this.state.score)}</div>
           </div>
           <div className='scoreContainer'>
