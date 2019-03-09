@@ -94,6 +94,7 @@ class Main extends React.Component {
           break;
         }
       }
+      this.state.scores.push(new_score);
       this.update_score(acc, Math.min(new_score[1]-SCORE_THRESHOLD,0));
     }
     
