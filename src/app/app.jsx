@@ -215,7 +215,7 @@ sensorSocket.onopen = function() {
         Name: "ESP_Laengsbeschl",
       },
       {
-        Name: "ESP_Querbeschleinigung",
+        Name: "ESP_Querbeschleunigung",
       },
     ],
     samplerate: 250,
