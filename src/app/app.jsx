@@ -7,6 +7,8 @@ import io from 'socket.io-client';
 // Set these "goal values" to reasonable defaults or compute dynamically.
 const accelLimit = 50;
 const jerkLimit = 150;
+const allIntervalData = [];
+const saveInterval = 10; // In minutes
 
 /**
  * Assume inner circle is 30% size
@@ -23,8 +25,6 @@ function dataToPos(accel, jerk) {
   return [finalVal * norm[0], finalVal * norm[1]];
 }
 
-
-
 class Main extends React.Component {
   constructor(props) {
     super(props);
@@ -33,6 +33,8 @@ class Main extends React.Component {
       jerk: [0, 0],
       smoothjerk: [0, 0],
       dampedaccel: [0, 0],
+      score: 100,
+      totalScore: 100,
     };
   }
 
@@ -62,13 +64,52 @@ class Main extends React.Component {
     clearInterval(this.jerkInterval);
   }
 
+  //How state should be updated.
+  updateState(accel, jerk) {
+    const now = Date.now();
+    while (now - allInterval[0].time > saveInterval * 60000) {
+      allIntervalData.shift();
+    }
+    allIntervalData.push({time: now, accel, jerk});
+
+    this.setState((prevState) => {
+      
+      
+      return {
+      accel: accel,
+      jerk: jerk,
+      pos: dataToPos(accel, jerk),
+      currentDangerVal: Math.min(Math.max(Math.sqrt((pos.map(a => a**2).reduce((a, b) => a+b)) - 50) / endDangerRangeRatio * 50, 1), 0),
+      previousDangerVal: prevState.currentDangerVal,
+      time: now,
+      prevTime: prevState.time,
+      scoreSum,
+      score: 
+      totalScore: (score < totalScore ? score : )
+    }});
+  }
+
+  // Returns new score based on data point.
+  addScore(prevscore, data) {
+    return 
+  }
+
+  removeScore(prevscore, data) {
+    return 
+  }
+
   render() {
     const accel = this.state.accel;
     const jerk = this.state.jerk;
     const smoothjerk = this.state.smoothjerk;
     const dampedaccel = this.state.dampedaccel;
-    const pos = dataToPos(accel, jerk);
+    //const pos = dataToPos(accel, jerk);
+    // const currentDangerVal = Math.min(Math.max(Math.sqrt((pos.map(a => a**2).reduce((a, b) => a+b)) - 50) / endDangerRangeRatio * 50, 1), 0);
     const isDangerous = pos.map(a => a**2).reduce((a, b) => a+b) >= 50**2;
+    const isWarn = pos.map(a => a**2).reduce((a, b) => a+b) >= 45**2;
+    const endDangerRangeRatio = 0.5;
+    const decay = 0.5;
+    const updateDangerVal = 
     return (
       <div className={'displaycontainer' + (isDangerous ? ' dangerous' : '')}>
         <div className='graph'>
@@ -87,7 +128,6 @@ class Main extends React.Component {
     )
   }
 };
-
 
 const backendSocket = io();
 const sensorSocket = new WebSocket('ws://130.82.239.210/ws');
