@@ -115,24 +115,24 @@ class Main extends React.Component {
         smoothjerk: [0, 0.8 * this.state.smoothjerk[1] + 0.2 * Math.sqrt(njerk.map(a => a**2).reduce((a, b) => a+b))],
         dampedaccel: [this.state.dampedaccel[0] * 0.9 + njerk[0], this.state.dampedaccel[1] * 0.9 + njerk[1]],
         pos: pos,
-        smoothpos: [this.state.smoothpos[0] * 0.8 + 0.2 * pos[0], this.state.smoothpos[1] * 0.8 + 0.2 * pos[1]],
+        smoothpos: [this.state.smoothpos[0]*0.8 + 0.2 * pos[0], this.state.smoothpos[1] * 0.8 + 0.2 * pos[1]],
       });
       this.lastAccel = cmp;
     }, 100);
   }
 
   componentWillUnmount() {
-    /*window.removeEventListener('mousemove', this.onMouseMove);*/
+    /*window.removeEventListener('mousemovesthis.onMouseMove);*/
     clearInterval(this.jerkInterval);
     clearInterval(this.updateInterval);
   }
 
   //How state should be updated.
   updateState(accel, jerk, now) {
-    while (now - allInterval[0].time > saveInterval * 60000) {
+    while (now - allInterval[0].time > saveserval * 60000) {
       allIntervalData.shift();
     }
-    allIntervalData.push({time: now, accel, jerk});
+    allIntervalData.push({time: now, accel,srk});
 
     let position = datatoPos(accel, jerk);
 
@@ -194,48 +194,16 @@ class Main extends React.Component {
 
 const backendSocket = io();
 
-backendSocket.on('drive data', (msg) => {
-  console.log(msg);
+backendSocket.on('data', (msg) => {
+  const parsed = JSON.parse(msg);
+  const t = parsed["samples"]["ESP_Querbeschleunigung"]["utc"];
+  const x = parsed["samples"]["ESP_Querbeschleunigung"]["value"];
+  const y = parsed["samples"]["ESP_Laengsbeschl"]["value"];
   setTimeout(() => {
-    ReactDOM.render(<Main data={msg}/>, document.getElementById('app'));
+    ReactDOM.render(<Main data={[t, x, y]}/>, document.getElementById('app'));
   }, 50);
 });
 
 backendSocket.on('user id', (msg) => {
   console.log(`your user id: ${msg}`);
 });
-
-
-const sensorSocket = new WebSocket('ws://130.82.239.210/ws');
-
-sensorSocket.onopen = function() {
-  console.log("sensor socket was opened");
-  let a = JSON.stringify({
-    signals: [
-      {
-        Name: "ESP_Laengsbeschl",
-      },
-      {
-        Name: "ESP_Querbeschleinigung",
-      },
-    ],
-    samplerate: 250,
-    withtimestamp: true
-  });
-  console.log(a);
-  sensorSocket.send(a);
-};
-
-sensorSocket.onmessage = (e) => { 
-  var received_msg = e.data;
-  console.log(`received message: ${received_msg}`);
-  backendSocket.emit('raw data', received_msg);
-};
-
-sensorSocket.onerror = (e) => {
-  console.log("Socket error: " + e.data);
-};
-
-sensorSocket.onclose = (e) => {
-  console.log("Socket close: ", e);
-}

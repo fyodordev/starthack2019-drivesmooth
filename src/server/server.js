@@ -9,6 +9,7 @@ import http from 'http';
 import socket from 'socket.io';
 import fs from 'fs';
 import crypto from 'crypto';
+import WebSocket from 'ws';
 
 const app = new Koa();
 const router = new Router();
@@ -71,6 +72,9 @@ async function loadData() {
 const server = http.createServer(app.callback());
 const io = new socket(server);
 
+let frontendSocket = null;
+let connectedToFrontend = false;
+
 io.on('connection', async function(socket) {
     // "fuck uf kryptographie" - fyodor 2k19
     const b64uid = Math.random();
@@ -85,11 +89,41 @@ io.on('connection', async function(socket) {
       veryReliableUserDatabase[b64uid].scores.push([new Date().toISOString(), msg]);
     });
 
-    socket.emit('drive data', await loadData());
     socket.emit('user id', b64uid);
+    frontendSocket = socket;
+    connectedToFrontend = true;
 })
 
+const sensorSocket = new WebSocket('ws://130.82.239.210/ws');
 
+sensorSocket.onopen = function() {
+  sensorSocket.send(JSON.stringify({
+    signals: [
+      {
+        Name: "ESP_Laengsbeschl",
+      },
+      {
+        Name: "ESP_Querbeschleunigung",
+      },
+    ],
+    samplerate: 250,
+    withtimestamp: true
+  }));
+};
+
+sensorSocket.onmessage = (e) => {
+  if (connectedToFrontend) {
+    frontendSocket.emit("data", e.data);
+  }
+};
+
+sensorSocket.onerror = (e) => {
+  console.log("Socket error: " + e.data);
+};
+
+sensorSocket.onclose = (e) => {
+  console.log("Socket close: ", e);
+}
 
 
 
