@@ -1,0 +1,37 @@
+{
+  "name": "quantool-front",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server/server.js",
+  "scripts": {
+    "buildcss": "node-sass src/app/css/main.scss --include-path src/app/css --output-style compressed -o dist/public",
+    "buildclient": "webpack --mode=development",
+    "buildserver": "babel src -d dist",
+    "build": "rm -rf dist/ && npm run buildclient && npm run buildserver && npm run buildcss",
+    "start": "npm run build && node ./dist/server/server.js"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.2.5",
+    "koa": "^2.7.0",
+    "koa-router": "^7.4.0",
+    "koa-send": "^5.0.0",
+    "koa-static": "^5.0.0",
+    "koa-views": "^6.1.5",
+    "react": "^16.8.3",
+    "react-dom": "^16.8.1",
+    "react-select": "^2.4.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.5",
+    "copy-webpack-plugin": "^4.6.0",
+    "node-sass": "^4.11.0",
+    "sass-loader": "^7.1.0",
+    "source-map-loader": "^0.2.4",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3"
+  }
+}
