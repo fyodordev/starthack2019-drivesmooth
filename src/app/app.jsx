@@ -89,6 +89,7 @@ class Main extends React.Component {
       for (let idx=0; idx<this.state.scores.length; ++idx) {
         if (this.state.scores[idx][0] < new_score[0]-SCORE_WINDOW) {
           acc += this.state.scores[idx][1];
+          this.state.scores.pop(idx--);
         } else {
           break;
         }
