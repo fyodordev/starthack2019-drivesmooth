@@ -9,7 +9,7 @@ const accelLimit = 2.75;
 const jerkLimit = 0.4;
 
 const SCORE_THRESHOLD = 50;
-const SCORE_10_BENCHMARK = 1.5372435736804815;
+const SCORE_10_BENCHMARK = 200;
 const SCORE_WINDOW = 10*60*1000;
 
 /**
@@ -98,10 +98,18 @@ class Main extends React.Component {
     }
     
     this.update_score = (removed, addition) => {
-      this.setState({
-        scoreSum: this.state.scoreSum + addition - removed,
-        score: 100 * Math.pow(10, -this.state.scoreSum / SCORE_10_BENCHMARK)
-      });
+      console.log(this.state.scoreSum);
+      if (this.state.scoreSum > 0) {
+        this.setState({
+          scoreSum: this.state.scoreSum + addition - removed,
+          score: 100 * Math.pow(10, -this.state.scoreSum / SCORE_10_BENCHMARK)
+        });
+      } else {
+        this.setState({
+          scoreSum: this.state.scoreSum + addition - removed,
+          score: 100
+        });
+      }
     }
 
     /*this.jerkInterval = setInterval(() => {
