@@ -49,7 +49,7 @@ async function loadData() {
   const yFileContent = await readFile('./data/ESP_Laengsbeschl.csv');
   const xFileContent = await readFile('./data/ESP_Querbeschleunigung.csv');
   const dfunc = (c) => c.split('\n').map(a => ((b => [Math.round(parseInt(b[0]) / 1000000), parseFloat(b[1])])(a.split(',')))).filter((d, i, c) => i === 0 || c[i-1][1] !== d[1]);
-  const xParsed = dfunc(xFileContent).map(a => [a[0], 7 * a[1], a[2]]);
+  const xParsed = dfunc(xFileContent).map(a => [a[0], 30 * a[1], a[2]]);
   const yParsed = dfunc(yFileContent);
   const res = [[0, xParsed[0][1], yParsed[0][1]]];
   const timestart = Math.max(xParsed[0][0], yParsed[0][0]);
@@ -72,7 +72,7 @@ async function loadData() {
 const server = http.createServer(app.callback());
 const io = new socket(server);
 
-let frontendSocket = null;
+let frontendSocket = [];
 let connectedToFrontend = false;
 
 io.on('connection', async function(socket) {
@@ -90,11 +90,11 @@ io.on('connection', async function(socket) {
     });
 
     socket.emit('user id', b64uid);
-    frontendSocket = socket;
+    frontendSocket.push(socket);
     connectedToFrontend = true;
 })
 
-const sensorSocket = new WebSocket('ws://130.82.239.210/ws');
+const sensorSocket = new WebSocket('ws://192.168.8.10/ws');
 
 sensorSocket.onopen = function() {
   sensorSocket.send(JSON.stringify({
@@ -113,7 +113,7 @@ sensorSocket.onopen = function() {
 
 sensorSocket.onmessage = (e) => {
   if (connectedToFrontend) {
-    frontendSocket.emit("data", e.data);
+    frontendSocket.forEach(a => a.emit("data", e.data));
   }
 };
 

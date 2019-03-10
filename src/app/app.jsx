@@ -5,11 +5,11 @@ import Chart from 'chart.js';
 
 
 // Set these "goal values" to reasonable defaults or compute dynamically.
-const accelLimit = 2.75;
-const jerkLimit = 0.4;
+const accelLimit = 3.25;
+const jerkLimit = 0.15;
 
 const SCORE_THRESHOLD = 50;
-const SCORE_10_BENCHMARK = 200;
+const SCORE_10_BENCHMARK = 5000;
 const SCORE_WINDOW = 10*60*1000;
 
 /**
@@ -168,11 +168,6 @@ class Main extends React.Component {
       <div className={'displaycontainer' + (isDangerous ? ' dangerous' : '')}>
         <div className='graph'>
           <div className='graph-inner'>
-            <div className="graph-dot blue" style={{top: `${-jerk[1]*50/jerkLimit}%`, left: `${jerk[0]*50/jerkLimit}%`}}></div>
-            <div className="graph-dot green" style={{top: `${-smoothjerk[1]*50/jerkLimit}%`, left: `${smoothjerk[0]*50/jerkLimit}%`}}></div>
-            <div className="graph-dot purple" style={{top: `${-dampedaccel[1]*50/accelLimit}%`, left: `${dampedaccel[0]*50/accelLimit}%`}}></div>
-            <div className="graph-dot black" style={{top: `${-accel[1]*50/accelLimit}%`, left: `${accel[0]*50/accelLimit}%`}}></div>
-            <div className="graph-dot red" style={{top: `${-pos[1]}%`, left: `${pos[0]}%`}}></div>
             <div className="graph-dot orange" style={{top: `${-smoothpos[1]}%`, left: `${smoothpos[0]}%`}}></div>
             <div className="graph-line horizontal"></div>
             <div className="graph-line vertical"></div>
@@ -209,7 +204,7 @@ let cy = 0;
 backendSocket.on('data', (msg) => {
   const parsed = JSON.parse(msg);
   const t = parsed["samples"]["ESP_Querbeschleunigung"]["utc"];
-  const x = parsed["samples"]["ESP_Querbeschleunigung"]["value"];
+  const x = 4 * parsed["samples"]["ESP_Querbeschleunigung"]["value"];
   const y = parsed["samples"]["ESP_Laengsbeschl"]["value"];
   if (t >= ct) {
     ct = t;
