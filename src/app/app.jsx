@@ -8,8 +8,9 @@ import Chart from 'chart.js';
 const accelLimit = 2.75;
 const jerkLimit = 0.4;
 
-const SCORE_THRESHOLD = 2;
-const SCORE_10_BENCHMARK = 1;
+const SCORE_THRESHOLD = 50;
+const SCORE_10_BENCHMARK = 1.5372435736804815;
+const SCORE_WINDOW = 10*60*1000;
 
 /**
  * Assume inner circle is 30% size
@@ -86,7 +87,7 @@ class Main extends React.Component {
     this.update_scores_array = (new_score) => {
       let acc = 0;
       for (let idx=0; idx<this.state.scores.length; ++idx) {
-        if (this.state.scores[idx][0] < new_score[0]-10*60*1000) {
+        if (this.state.scores[idx][0] < new_score[0]-SCORE_WINDOW) {
           acc += this.state.scores[idx][1];
         } else {
           break;
@@ -143,7 +144,7 @@ class Main extends React.Component {
       }
     });
 
-    this.update_scores_array([now, Math.sqrt(pos[0]**2 + pos[1]**2)]);
+    this.update_scores_array([now, Math.sqrt(this.state.smoothpos[0]**2 + this.state.smoothpos[1]**2)]);
   }
   
   render() {
