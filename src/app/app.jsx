@@ -93,13 +93,13 @@ class Main extends React.Component {
         }
       }
       this.state.scores.push(new_score);
-      this.update_score(acc, Math.min(new_score[1]-SCORE_THRESHOLD,0));
+      this.update_score(acc, Math.max(new_score[1]-SCORE_THRESHOLD,0));
     }
     
     this.update_score = (removed, addition) => {
       this.setState({
         scoreSum: this.state.scoreSum + addition - removed,
-        score: 100 * Math.pow(10, -this.state.score / SCORE_10_BENCHMARK)
+        score: 100 * Math.pow(10, -this.state.scoreSum / SCORE_10_BENCHMARK)
       });
     }
 
@@ -209,8 +209,7 @@ backendSocket.on('data', (msg) => {
 });
 
 setInterval(() => {
-  console.log(ct, cx, cy);
-  mainRef.current.updateState([cx, cy], [cx - lastAccel[0], cy - lastAccel[1]], ct);
+  mainRef.current.updateState([cx, cy], [cx - lastAccel[0], cy - lastAccel[1]], ct / 1000000);
   lastAccel = [cx, cy];
 }, 50);
 
